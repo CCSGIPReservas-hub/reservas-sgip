@@ -30,6 +30,14 @@
             background-color: #f8fafc;
         }
         .form-input:focus { border-bottom-color: var(--sgi-gold); }
+        .qty-input {
+            width: 60px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            padding: 2px 5px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body class="bg-slate-100 min-h-screen font-sans">
@@ -37,7 +45,7 @@
     <header class="bg-white border-b-4 border-sgi-gold py-10 shadow-md">
         <div class="container mx-auto px-4 text-center">
             <div class="mb-4">
-                <img src="https://github.com/ambujchawla-hub/reservas-sgip/blob/main/SGIP.png?raw=true" alt="SGI Panamá" class="mx-auto h-24 object-contain">
+                <img src="https://github.com/CCSGIPReservas-hub/reservas-sgip/blob/main/SGIP.png?raw=true" alt="Logo SGI Panamá" class="mx-auto h-24 object-contain">
             </div>
             <h1 class="text-2xl md:text-3xl font-bold text-sgi-blue tracking-widest uppercase">
                 SGI DE PANAMÁ
@@ -71,6 +79,8 @@
                             <option value="Damas">División de Damas</option>
                             <option value="DJM">División Juvenil Masculina</option>
                             <option value="DJF">División Juvenil Femenina</option>
+                            <option value="Horizontal">Grupo Horizontal</option>
+                            <option value="Cultural">Grupo Cultural</option>
                         </select>
                     </div>
                     <div>
@@ -97,6 +107,7 @@
                         <div>
                             <label class="block text-[10px] font-bold text-gray-500 uppercase italic">Fecha Solicitada *</label>
                             <input type="date" name="fecha" id="fechaInput" required class="form-input">
+                            <p id="dateError" class="text-red-600 text-[10px] mt-1 hidden font-bold uppercase">Los martes y jueves no hay disponibilidad.</p>
                         </div>
                         <div>
                             <label class="block text-[10px] font-bold text-gray-500 uppercase italic">Cantidad de Personas (Aprox) *</label>
@@ -108,8 +119,7 @@
                         <label class="block text-sm font-bold text-sgi-blue mb-4 text-center">
                             Hora de la actividad: Favor seleccionar la hora de las aquí detalladas.
                         </label>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3" id="timeList">
-                            </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3" id="timeList"></div>
                     </div>
                 </div>
             </div>
@@ -118,39 +128,59 @@
                 <div class="p-4 bg-slate-50 border-b">
                     <h3 class="font-bold text-sgi-blue uppercase text-sm">III. Equipos y Mobiliario Requerido</h3>
                 </div>
-                <div class="p-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div>
-                            <p class="text-[10px] font-bold text-sgi-blue uppercase mb-3 italic">Mobiliario:</p>
-                            <div class="space-y-2">
-                                <label class="flex items-center space-x-3 text-sm text-gray-600"><input type="checkbox" name="req" value="Sillas" class="w-4 h-4"> <span>Sillas Adicionales</span></label>
-                                <label class="flex items-center space-x-3 text-sm text-gray-600"><input type="checkbox" name="req" value="Mesas" class="w-4 h-4"> <span>Mesas Largas / Presidium</span></label>
-                                <label class="flex items-center space-x-3 text-sm text-gray-600"><input type="checkbox" name="req" value="Podio" class="w-4 h-4"> <span>Podio / Atril</span></label>
-                                <label class="flex items-center space-x-3 text-sm text-gray-600"><input type="checkbox" name="req" value="Pizarra" class="w-4 h-4"> <span>Pizarra / Tablero</span></label>
+                <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <p class="text-[10px] font-bold text-sgi-blue uppercase mb-3 italic">Mobiliario:</p>
+                        <div class="space-y-4 text-sm text-gray-600">
+                            <div class="flex items-center justify-between">
+                                <label class="flex items-center space-x-3">
+                                    <input type="checkbox" name="req_sillas" value="Sillas" class="w-4 h-4"> 
+                                    <span>Sillas Adicionales</span>
+                                </label>
+                                <div class="flex items-center">
+                                    <span class="text-[10px] text-gray-400">Cant:</span>
+                                    <input type="number" name="cant_sillas" min="0" placeholder="0" class="qty-input">
+                                </div>
                             </div>
+                            <div class="flex items-center justify-between">
+                                <label class="flex items-center space-x-3">
+                                    <input type="checkbox" name="req_mesas" value="Mesas" class="w-4 h-4"> 
+                                    <span>Mesas Largas</span>
+                                </label>
+                                <div class="flex items-center">
+                                    <span class="text-[10px] text-gray-400">Cant:</span>
+                                    <input type="number" name="cant_mesas" min="0" placeholder="0" class="qty-input">
+                                </div>
+                            </div>
+                            <label class="flex items-center space-x-3">
+                                <input type="checkbox" name="req_podio" value="Podio" class="w-4 h-4"> 
+                                <span>Podio / Atril</span>
+                            </label>
                         </div>
-                        <div>
-                            <p class="text-[10px] font-bold text-sgi-blue uppercase mb-3 italic">Audiovisual:</p>
-                            <div class="space-y-2">
-                                <label class="flex items-center space-x-3 text-sm text-gray-600"><input type="checkbox" name="req" value="Microfono" class="w-4 h-4"> <span>Micrófonos Inalámbricos</span></label>
-                                <label class="flex items-center space-x-3 text-sm text-gray-600"><input type="checkbox" name="req" value="Proyector" class="w-4 h-4"> <span>Proyector (Multimedia)</span></label>
-                                <label class="flex items-center space-x-3 text-sm text-gray-600"><input type="checkbox" name="req" value="Pantalla" class="w-4 h-4"> <span>Pantalla Gigante</span></label>
-                                <label class="flex items-center space-x-3 text-sm text-gray-600"><input type="checkbox" name="req" value="Audio" class="w-4 h-4"> <span>Consola de Audio / Sonido</span></label>
-                            </div>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-bold text-sgi-blue uppercase mb-3 italic">Audiovisual:</p>
+                        <div class="space-y-4 text-sm text-gray-600">
+                            <label class="flex items-center space-x-3">
+                                <input type="checkbox" name="req_tv" value="Televisor" class="w-4 h-4"> 
+                                <span>Televisor</span>
+                            </label>
+                            <label class="flex items-center space-x-3">
+                                <input type="checkbox" name="req_audio" value="Consola de Audio" class="w-4 h-4"> 
+                                <span>Consola de Audio / Sonido</span>
+                            </label>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-blue-50 p-6 rounded-lg border-2 border-blue-200 text-gray-700 text-sm leading-relaxed shadow-inner">
-                <p class="font-bold text-sgi-blue mb-2 uppercase text-xs tracking-wider">Aclaración Importante:</p>
-                <p>
-                    Es importante llenar todos los datos solicitados, los salones o espacios en el centro cultural se asignarán de acuerdo al orden de llegada de cada solicitud, sin embargo de no haber disponibilidad de salón o espacio en la fecha y hora solicitada, nos estaremos comunicado vía WhatsApp o email brindándoles la opción en hora y fecha más cercana. Favor coopéremos con el cuidado de nuestras instalaciones, el Salón o espacio asignado se les entregará limpio y ordenado, agradecemos que al terminar la actividad el mismo sea devuelto en las mismas condiciones.
-                </p>
+            <div class="bg-blue-50 p-6 rounded-lg border-2 border-blue-200 text-gray-700 text-sm shadow-inner italic">
+                <p class="font-bold text-sgi-blue mb-2 uppercase text-xs">Aclaración Importante:</p>
+                <p>Los espacios se asignan según orden de llegada. Se les enviará un correo de confirmación automático una vez enviado este formulario.</p>
             </div>
 
             <div class="text-center pt-4">
-                <button type="submit" class="w-full md:w-auto md:px-24 bg-sgi-blue hover:bg-slate-800 text-white font-bold py-5 rounded shadow-xl uppercase tracking-widest transition-all border-b-4 border-black/20">
+                <button type="submit" class="w-full md:w-auto md:px-24 bg-sgi-blue hover:bg-slate-800 text-white font-bold py-5 rounded shadow-xl uppercase tracking-widest transition-all">
                     Enviar Solicitud Oficial
                 </button>
             </div>
@@ -158,57 +188,47 @@
     </main>
 
     <footer class="bg-white py-12 border-t mt-10 text-center">
-        <p class="text-sgi-blue font-bold tracking-[0.3em] italic">SGI DE PANAMÁ</p>
+        <p class="text-sgi-blue font-bold tracking-[0.3em] italic uppercase">SGI DE PANAMÁ</p>
         <p class="text-gray-400 text-[10px] mt-2 uppercase tracking-widest">Secretaría de Reservas - Grupo Gajokai</p>
     </footer>
 
     <script>
-        const SCRIPT_URL = 'TU_URL_DE_GOOGLE_APPS_SCRIPT';
+        const SCRIPT_URL = https://script.google.com/macros/s/AKfycbwtv4eAUObOxsryshCHxDegpw8z6QUUV5UXeiHxp9hBul-s173wn6B7mOWxIV7dSoMHzA/exec;
 
         document.addEventListener('DOMContentLoaded', () => {
             const f = document.getElementById('fechaInput');
+            const dateError = document.getElementById('dateError');
             f.min = new Date().toISOString().split('T')[0];
 
-            const list = document.getElementById('timeList');
-
-            // Definición de horarios según tus requerimientos
-            const scheduleData = [
-                {
-                    day: "Para Lunes, Miércoles y Viernes",
-                    slots: ["04:00 PM - 05:30 PM", "06:00 PM - 07:30 PM"]
-                },
-                {
-                    day: "Para los dias sábados",
-                    slots: [
-                        "08:00 AM - 09:30 AM", "10:00 AM - 11:30 AM", 
-                        "02:00 PM - 03:30 PM", "04:00 PM - 05:30 PM", 
-                        "06:00 PM - 07:30 PM"
-                    ]
-                },
-                {
-                    day: "Para los dias Domingos",
-                    slots: ["08:00 AM - 09:30 AM", "10:00 AM - 11:30 AM", "02:00 PM - 03:30 PM"]
+            // Bloquear Martes y Jueves
+            f.addEventListener('input', function() {
+                const day = new Date(this.value.replace(/-/g, '\/')).getDay();
+                if (day === 2 || day === 4) {
+                    Swal.fire({ icon: 'error', title: 'Día No Disponible', text: 'Martes y Jueves no hay disponibilidad.', confirmButtonColor: '#003366' });
+                    this.value = '';
+                    dateError.classList.remove('hidden');
+                } else {
+                    dateError.classList.add('hidden');
                 }
+            });
+
+            const list = document.getElementById('timeList');
+            const scheduleData = [
+                { day: "Para Lunes, Miércoles y Viernes", slots: ["04:00 PM - 05:30 PM", "06:00 PM - 07:30 PM"] },
+                { day: "Para los dias sábados", slots: ["08:00 AM - 09:30 AM", "10:00 AM - 11:30 AM", "02:00 PM - 03:30 PM", "04:00 PM - 05:30 PM", "06:00 PM - 07:30 PM"] },
+                { day: "Para los dias Domingos", slots: ["08:00 AM - 09:30 AM", "10:00 AM - 11:30 AM", "02:00 PM - 03:30 PM"] }
             ];
 
-            // Generar la lista con encabezados de días
             scheduleData.forEach(group => {
-                // Título del día (ocupa todo el ancho del grid)
-                const dayHeader = document.createElement('div');
-                dayHeader.className = "col-span-full mt-4 mb-1";
-                dayHeader.innerHTML = `<span class="text-[10px] font-extrabold text-sgi-blue uppercase italic">${group.day}:</span>`;
-                list.appendChild(dayHeader);
+                const header = document.createElement('div');
+                header.className = "col-span-full mt-4 mb-1";
+                header.innerHTML = `<span class="text-[10px] font-extrabold text-sgi-blue uppercase italic">${group.day}:</span>`;
+                list.appendChild(header);
 
-                // Slots de tiempo
                 group.slots.forEach(s => {
                     const label = document.createElement('label');
                     label.className = "time-item cursor-pointer";
-                    label.innerHTML = `
-                        <input type="checkbox" name="hora" value="${s}" class="sr-only peer">
-                        <span class="block py-3 px-4 border-2 border-gray-100 rounded bg-white text-xs font-semibold text-center hover:border-sgi-gold transition-all peer-checked:bg-sgi-blue peer-checked:text-white peer-checked:border-sgi-blue shadow-sm">
-                            ${s}
-                        </span>
-                    `;
+                    label.innerHTML = `<input type="checkbox" name="hora" value="${s}" class="sr-only peer"><span class="block py-3 px-4 border-2 border-gray-100 rounded bg-white text-xs font-semibold text-center hover:border-sgi-gold transition-all peer-checked:bg-sgi-blue peer-checked:text-white peer-checked:border-sgi-blue shadow-sm">${s}</span>`;
                     list.appendChild(label);
                 });
             });
@@ -217,39 +237,32 @@
         document.getElementById('reservaForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const h = Array.from(document.querySelectorAll('input[name="hora"]:checked'));
-            if (h.length === 0) { 
-                Swal.fire('Atención', 'Por favor, seleccione al menos un horario.', 'warning'); 
-                return; 
-            }
+            if (h.length === 0) { Swal.fire('Atención', 'Seleccione al menos un horario.', 'warning'); return; }
 
-            Swal.fire({ 
-                title: 'Procesando...', 
-                text: 'Enviando solicitud a sgip.reservas@gmail.com', 
-                allowOutsideClick: false, 
-                didOpen: () => Swal.showLoading() 
-            });
+            Swal.fire({ title: 'Enviando...', text: 'Se enviará una copia a su correo.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
             const formData = new FormData(this);
             const data = Object.fromEntries(formData.entries());
             
-            // Unir múltiples horas seleccionadas
+            // Procesar Horas
             data.hora = h.map(el => el.value).join(', ');
 
-            // Unir múltiples requerimientos
-            const r = Array.from(document.querySelectorAll('input[name="req"]:checked'));
-            data.req = r.map(el => el.value).join(', ');
+            // Procesar Requerimientos y cantidades
+            let reqList = [];
+            if (data.req_sillas) reqList.push(`${data.cant_sillas || 0} Sillas`);
+            if (data.req_mesas) reqList.push(`${data.cant_mesas || 0} Mesas Largas`);
+            if (data.req_podio) reqList.push("Podio / Atril");
+            if (data.req_tv) reqList.push("Televisor");
+            if (data.req_audio) reqList.push("Consola de Audio");
+            
+            data.req = reqList.join(', ');
 
             fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: new URLSearchParams(data) })
             .then(() => {
-                Swal.fire({
-                    icon: 'success',
-                    title: '¡Solicitud Enviada!',
-                    text: 'Se ha registrado su solicitud correctamente.',
-                    confirmButtonText: 'Finalizar',
-                    confirmButtonColor: '#003366'
-                }).then(() => location.reload());
+                Swal.fire({ icon: 'success', title: '¡Enviado!', text: 'Revise su correo para la confirmación.', confirmButtonColor: '#003366' })
+                .then(() => location.reload());
             })
-            .catch(() => Swal.fire('Error', 'Hubo un error de conexión.', 'error'));
+            .catch(() => Swal.fire('Error', 'No se pudo conectar.', 'error'));
         });
     </script>
 </body>
